@@ -1,16 +1,11 @@
-
 # !pip install gradio transformers
 
 import gradio as gr
 import torch
 import torch.nn as nn
 from torchvision import transforms, models
-# We only need the ViT model from transformers now
 from transformers import ViTForImageClassification
 from PIL import Image
-
-
-
 
 # --- 2. App Configuration ---
 
@@ -28,31 +23,34 @@ inference_transform = transforms.Compose([
 ])
 
 # --- 4. Load Model ---
-def load_model(model_path):
-    print(f"Loading model from {model_path}...")
+def load_model():
+    print(f"Loading model...")
     try:
-        # Load the base ViT model structure
+        # Initialize model with correct number of classes
         model = ViTForImageClassification.from_pretrained(
             'google/vit-base-patch16-224',
             num_labels=NUM_CLASSES,
             ignore_mismatched_sizes=True
         ).to(DEVICE)
         
-        # Load your fine-tuned weights
-        model.load_state_dict(torch.load(model_path, map_location=DEVICE))
+        # Try to load fine-tuned weights if they exist
+        try:
+            model.load_state_dict(torch.load(MODEL_PATH, map_location=DEVICE))
+            print("Fine-tuned weights loaded successfully.")
+        except FileNotFoundError:
+            print(f"Fine-tuned weights not found at {MODEL_PATH}. Using pre-trained model only.")
+        except Exception as e:
+            print(f"Error loading fine-tuned weights: {e}. Using pre-trained model.")
+        
         model.eval()
-        print("Model loaded successfully.")
         return model
-    except FileNotFoundError:
-        print(f"Error: Model file not found at {model_path}.")
-        print("Please make sure 'vit_base_best.pth' is uploaded to your Colab session.")
-        return None
+        
     except Exception as e:
         print(f"Error loading model: {e}")
         return None
 
 # Load the model once when the script starts
-model = load_model(MODEL_PATH)
+model = load_model()
 
 # --- 5. Prediction Function ---
 def predict(input_image: Image.Image):
@@ -70,9 +68,13 @@ def predict(input_image: Image.Image):
 
     # Perform inference
     with torch.no_grad():
-        # Get the logits from the model's output object
-        outputs = model(image_tensor).logits
-        probabilities = torch.nn.functional.softmax(outputs, dim=1)[0]
+        outputs = model(image_tensor)
+        # Handle different output formats
+        if hasattr(outputs, 'logits'):
+            logits = outputs.logits
+        else:
+            logits = outputs
+        probabilities = torch.nn.functional.softmax(logits, dim=1)[0]
     
     # Create a dictionary of {label: confidence}
     confidences = {CLASS_LABELS[i]: float(probabilities[i]) for i in range(NUM_CLASSES)}
@@ -93,11 +95,14 @@ if model is not None:
         title=title,
         description=description,
         examples=[
-
+            # You can add example images here later
+            # ["example_glioma.jpg"],
+            # ["example_meningioma.jpg"],
+            # ["example_notumor.jpg"],
+            # ["example_pituitary.jpg"]
         ]
     )
     
-
     demo.launch(share=True, debug=True)
 else:
     print("Gradio interface could not be started because the model failed to load.")
