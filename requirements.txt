@@ -1,0 +1,1 @@
+torch torchvision gradio transformers scikit-learn numpy matplotlib seaborn opencv-python-headless tqdm jupyter Pillow
