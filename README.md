@@ -19,27 +19,3 @@ Git LFS: (Git Large File Storage) To handle the large .pth model files.Project S
 ├── requirements.txt       # A list of all Python dependencies
 └── README.md              # This file
 
-How to Run This Project LocallyYou can easily run the Gradio demo on your own machine.1. PrerequisitesPython 3.8+Git and Git LFS (Git Large File Storage)2. Clone the RepositoryFirst, you must have git-lfs installed. Then, clone the repository. Using git lfs clone is the best way to ensure the large model files are downloaded correctly.# Install git-lfs (you only need to do this once per machine)
-# On macOS: brew install git-lfs
-# On Windows: git lfs install
-# On Linux: sudo apt-get install git-lfs
-# git lfs install
-
-# Clone the repository
-git clone [https://github.com/YOUR_USERNAME/YOUR_REPOSITORY_NAME.git](https://github.com/YOUR_USERNAME/YOUR_REPOSITORY_NAME.git)
-cd YOUR_REPOSITORY_NAME
-
-3. Set Up a Virtual EnvironmentIt's highly recommended to use a virtual environment.# Create a virtual environment
-python -m venv venv
-
-# Activate it
-# On macOS/Linux:
-source venv/bin/activate
-# On Windows:
-.\venv\Scripts\activate
-
-4. Install DependenciesInstall all the required Python libraries from the requirements.txt file.pip install -r requirements.txt
-
-5. Run the Gradio AppYou're all set! Just run the gradio_app.py script.python gradio_app.py
-
-This will start a local web server. Open the URL printed in your terminal (usually http://127.0.0.1:7860) in your browser to use the app!
