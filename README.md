@@ -10,5 +10,8 @@ Gradio: For building and serving the interactive web demo.
 Scikit-learn: For calculating metrics (accuracy, classification report).
 Jupyter Notebook: For experimentation and training.
 
+DATASET_LINK:https://www.kaggle.com/datasets/masoudnickparvar/brain-tumor-mri-dataset
+
+
 
 
